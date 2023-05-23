@@ -6,14 +6,17 @@
     <thead>
       <th>ID</th>
       <th>Name</th>
-      <th>Contact</th>
-      <th>Edit</th>
-      <th>Delete</th>
+      <th>Created</th>
+      <th>Taken Ownership</th>
+      <th>End Date</th>
+      <th>Sevarity</th>
+      <th>Type</th>
     </thead>
     <tbody>
       {% for row in datas %}
         <tr>
-          <td>{{loop.leaderboard}}</td>
+          <td>{{row.id}}</td>
+          <td>{{row.name}}</td>
           <td>{{row.create_date}}</td>
           <td>{{row.take_ownership_timestamp}}</td>
           <td>{{row.closed_incident_timestamp}}</td>

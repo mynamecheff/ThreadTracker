@@ -19,6 +19,7 @@ def crud():
 @app.route("/add_data",methods=['POST','GET'])
 def add_data():
     if request.method=='POST':
+        name=request.form['name']
         create_date=request.form['create_date']
         take_ownership_timestamp=request.form['take_ownership_timestamp']
         closed_incident_timestamp=request.form['closed_incident_timestamp']
@@ -27,7 +28,7 @@ def add_data():
 
         con=sql.connect("leaderboard.db")
         cur=con.cursor()
-        cur.execute("insert into stats_data(create_date,take_ownership_timestamp,closed_incident_timestamp,sd_severity,type) values (?,?,?,?,?)",(create_date,take_ownership_timestamp,closed_incident_timestamp,sd_severity,type))
+        cur.execute("insert into stats_data(name, create_date,take_ownership_timestamp,closed_incident_timestamp,sd_severity,type) values (?, ?,?,?,?,?)",(name, create_date,take_ownership_timestamp,closed_incident_timestamp,sd_severity,type))
         con.commit()
         flash('stats Added','success')
         return redirect(url_for("crud"))
@@ -36,6 +37,7 @@ def add_data():
 @app.route("/edit_data/<string:id>",methods=['POST','GET'])
 def edit_data(id):
     if request.method=='POST':
+        name=request.form['name']
         create_date=request.form['create_date']
         take_ownership_timestamp=request.form['take_ownership_timestamp']
         closed_incident_timestamp=request.form['closed_incident_timestamp']
@@ -44,7 +46,7 @@ def edit_data(id):
 
         con=sql.connect("leaderboard.db")
         cur=con.cursor()
-        cur.execute("update stats_data set create_date=?,take_ownership_timestamp=?,closed_incident_timestamp=?,sd_severity=?,type=? where id=?",(create_date,take_ownership_timestamp,closed_incident_timestamp,sd_severity,type,id))
+        cur.execute("update stats_data set name=?,create_date=?,take_ownership_timestamp=?,closed_incident_timestamp=?,sd_severity=?,type=? where id=?",(name, create_date,take_ownership_timestamp,closed_incident_timestamp,sd_severity,type,id))
         con.commit()
         flash('data Updated','success')
         return redirect(url_for("crud"))

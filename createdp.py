@@ -6,10 +6,11 @@ con = sql.connect('leaderboard.db')
 #Create a Connection
 cur = con.cursor()
 
-#Drop users table if already exsist.
-cur.execute("DROP TABLE IF EXISTS users")
+#Drop  table if already exsist.
+cur.execute("DROP TABLE IF EXISTS stats_data")
 
-#Create users table  in db_web database
+
+#Create  table  in db_web database
 #sql ='''CREATE TABLE "users" (
 #	"UID"	INTEGER PRIMARY KEY AUTOINCREMENT,
 #	"UNAME"	TEXT,
@@ -19,6 +20,7 @@ cur.execute("DROP TABLE IF EXISTS users")
 
 sql = '''CREATE TABLE "stats_data" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
     "create_date" TEXT NOT NULL,
     "take_ownership_timestamp" TEXT NOT NULL,
     "closed_incident_timestamp" TEXT,
