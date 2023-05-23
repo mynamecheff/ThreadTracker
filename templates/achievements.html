@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <h1 class="text-3xl font-semibold mb-4">Achievements</h1>
+
+    {% for data in datas %}
+        <div class="bg-white shadow rounded-lg p-4 mb-4">
+            <p class="text-lg"><strong>Name:</strong> {{ data['name'] }}</p>
+            <p class="text-lg"><strong>Type:</strong> {{ data['type'] }}</p>
+            <p class="text-lg"><strong>Incidents:</strong> {{ data['incidents'] }}</p>
+            {% if data['type'] in ACHIEVEMENT_THRESHOLD %}
+                <p class="text-lg"><strong>Achievement:</strong> {{ ACHIEVEMENT_THRESHOLD[data['type']]['name'] }}</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endblock %}

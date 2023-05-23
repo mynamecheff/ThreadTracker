@@ -1,23 +1,63 @@
-<html>
-  <head>
-    <title>Flask - SQLite </title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    <div class='container pt-3'>
-      {% with messages=get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category,message in messages %}
-            <div class='alert alert-{{category}}'>{{message}}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
-      {% block body %}
-      
-      {% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask - SQLite</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-500">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="#" class="text-white text-2xl font-semibold">Flask - SQLite</a>
+                <button class="text-white focus:outline-none md:hidden">
+                    <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div class="hidden md:flex md:items-center">
+                    <a href="#" class="text-white mx-4 hover:text-gray-200">Home</a>
+                    <a href="#" class="text-white mx-4 hover:text-gray-200">About</a>
+                    <a href="#" class="text-white mx-4 hover:text-gray-200">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        {% with messages=get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="bg-green-500 text-white font-semibold px-4 py-2 mb-4 rounded animate-fadeIn">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block body %}{% endblock %}
     </div>
-  </body>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elements = document.getElementsByClassName('animate-fadeIn');
+            Array.prototype.forEach.call(elements, function(el) {
+                el.style.animation = 'fadeIn 0.5s';
+            });
+        });
+    </script>
+</body>
 </html>
