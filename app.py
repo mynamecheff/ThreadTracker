@@ -21,7 +21,6 @@ def crud():
 @app.route("/add_data", methods=['POST', 'GET'])
 def add_data():
     if request.method == 'POST':
-        # Fetch form data
         name = request.form['name']
         create_date = request.form['create_date']
         take_ownership_timestamp = request.form['take_ownership_timestamp']
