@@ -1,21 +1,51 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
 import sqlite3 as sql
 from achievements import ACHIEVEMENT_THRESHOLD, ACHIEVEMENT_MESSAGE
+#from lul import EpochConverter
+import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
+
+from flask import Flask, render_template
+import sqlite3 as sql
+import datetime
+
+app = Flask(__name__)
+
+from flask import Flask, render_template
+import sqlite3 as sql
+import datetime
+
+app = Flask(__name__)
 
 @app.route("/crud")
 def crud():
     con = sql.connect("leaderboard.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("select * from stats_data")
-    data = cur.fetchall()
-    return render_template("crud.html", datas=data)
+    cur.execute("SELECT * FROM stats_data")
+    rows = cur.fetchall()
+
+    # Convert selected epoch values to human-readable time
+    formatted_data = []
+    for row in rows:
+        formatted_row = {}
+        for key, value in dict(row).items():
+            if key in ['create_date', 'take_ownership_timestamp', 'closed_incident_timestamp']:
+                if value is not None:
+                    epoch_time = float(value)  # Convert to float
+                    readable_time = datetime.datetime.fromtimestamp(epoch_time / 1000.0).strftime('%Y-%m-%d %H:%M:%S')
+                    formatted_row[key] = readable_time
+                else:
+                    formatted_row[key] = None
+            else:
+                formatted_row[key] = value
+        formatted_data.append(formatted_row)
+    
+    return render_template("crud.html", datas=formatted_data)
+
+
 
 
 @app.route("/add_data", methods=['POST', 'GET'])
@@ -112,8 +142,6 @@ def achievements():
             achievements_data.append(data)
 
     return render_template("achievements.html", datas=achievements_data, ACHIEVEMENT_MESSAGE=ACHIEVEMENT_MESSAGE, ACHIEVEMENT_THRESHOLD=ACHIEVEMENT_THRESHOLD)
-
-
 
 
 def check_achievements(name, incident_type):
