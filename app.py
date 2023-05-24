@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 import sqlite3 as sql
 from achievements import ACHIEVEMENT_THRESHOLD, ACHIEVEMENT_MESSAGE
-#from lul import EpochConverter
 import datetime
+from lul import EpochConverter
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
@@ -27,25 +27,18 @@ def crud():
     cur.execute("SELECT * FROM stats_data")
     rows = cur.fetchall()
 
-    # Convert selected epoch values to human-readable time
+    # calls on lul.py to convert epoch time to human-readable time if epoch time is not None
     formatted_data = []
     for row in rows:
         formatted_row = {}
         for key, value in dict(row).items():
             if key in ['create_date', 'take_ownership_timestamp', 'closed_incident_timestamp']:
-                if value is not None:
-                    epoch_time = float(value)  # Convert to float
-                    readable_time = datetime.datetime.fromtimestamp(epoch_time / 1000.0).strftime('%Y-%m-%d %H:%M:%S')
-                    formatted_row[key] = readable_time
-                else:
-                    formatted_row[key] = None
+                formatted_row[key] = EpochConverter.convert(value)
             else:
                 formatted_row[key] = value
         formatted_data.append(formatted_row)
     
     return render_template("crud.html", datas=formatted_data)
-
-
 
 
 @app.route("/add_data", methods=['POST', 'GET'])
