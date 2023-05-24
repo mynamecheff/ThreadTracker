@@ -1,23 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 import sqlite3 as sql
 from achievements import ACHIEVEMENT_THRESHOLD, ACHIEVEMENT_MESSAGE
-import datetime
 from lul import EpochConverter
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
-
-from flask import Flask, render_template
-import sqlite3 as sql
-import datetime
-
-app = Flask(__name__)
-
-from flask import Flask, render_template
-import sqlite3 as sql
-import datetime
-
-app = Flask(__name__)
 
 @app.route("/crud")
 def crud():
