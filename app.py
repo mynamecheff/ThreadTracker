@@ -134,5 +134,9 @@ def check_achievements(name, incident_type):
         flash(f'Achievement Unlocked: {achievement_message}', 'info')
 
 
+@app.route("/loading")
+def loading():
+     return render_template("loading.html")
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

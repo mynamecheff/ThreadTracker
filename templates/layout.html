@@ -5,24 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask - SQLite</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body class="bg-gray-100">
     <nav class="bg-blue-500">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
-                <a href="#" class="text-white text-2xl font-semibold">Flask - SQLite</a>
+                <a href="/loading" class="text-white text-2xl font-semibold">ThreadTracker</a>
                 <button class="text-white focus:outline-none md:hidden">
                     <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
                         <path
@@ -30,9 +20,9 @@
                     </svg>
                 </button>
                 <div class="hidden md:flex md:items-center">
-                    <a href="#" class="text-white mx-4 hover:text-gray-200">Home</a>
-                    <a href="#" class="text-white mx-4 hover:text-gray-200">About</a>
-                    <a href="#" class="text-white mx-4 hover:text-gray-200">Contact</a>
+                    <a href="/crud" class="text-white mx-4 hover:text-gray-200">Dashboard</a>
+                    <a href="/achievements" class="text-white mx-4 hover:text-gray-200">Achievements</a>
+                    <a href="/leaderboard" class="text-white mx-4 hover:text-gray-200">Leaderboard</a>
                 </div>
             </div>
         </div>
@@ -51,13 +41,5 @@
         {% block body %}{% endblock %}
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var elements = document.getElementsByClassName('animate-fadeIn');
-            Array.prototype.forEach.call(elements, function(el) {
-                el.style.animation = 'fadeIn 0.5s';
-            });
-        });
-    </script>
 </body>
 </html>

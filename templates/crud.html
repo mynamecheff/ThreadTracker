@@ -1,6 +1,8 @@
 {% extends 'layout.html' %}
 
+
 {% block body %}
+
   <h3 class="text-center text-gray-500 text-2xl font-semibold mb-3">Flask - SQLite CRUD Application</h3>
   <p class="text-right">
     <a href="{{ url_for('add_data') }}"
@@ -43,4 +45,5 @@
       {% endfor %}
     </tbody>
   </table>
+
 {% endblock %}
