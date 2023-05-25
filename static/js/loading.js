@@ -29,7 +29,7 @@ function inc() {
   if (letter_count >= word.length) {
     finished = true;
     setTimeout(function() {
-      window.location.href = "crud";
+      window.location.href = "/";
     }, 1500);
   } else {
     setTimeout(inc, 1000);
