@@ -134,6 +134,10 @@ def check_achievements(name, incident_type):
         flash(f'Achievement Unlocked: {achievement_message}', 'info')
 
 
+@app.route("/")
+def index():
+    return render_template("frontpage.html")
+
 @app.route("/loading")
 def loading():
      return render_template("loading.html")
