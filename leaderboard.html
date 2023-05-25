@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<body class="bg-gray-100">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-4">Leaderboard</h1>
+
+    <h2 class="text-lg font-bold mb-2">Total Incidents</h2>
+    <table class="min-w-full bg-white border border-gray-300">
+      <thead>
+        <tr>
+          <th class="px-6 py-3 border-b border-gray-300 font-semibold text-left">Name</th>
+          <th class="px-6 py-3 border-b border-gray-300 font-semibold text-left">Incidents</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in datas if row['type'] == 'Total' %}
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">{{ row['name'] }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ row['incidents'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2 class="text-lg font-bold my-4">QRadar Incidents</h2>
+    <table class="min-w-full bg-white border border-gray-300">
+      <thead>
+        <tr>
+          <th class="px-6 py-3 border-b border-gray-300 font-semibold text-left">Name</th>
+          <th class="px-6 py-3 border-b border-gray-300 font-semibold text-left">Incidents</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in datas if row['type'] == 'QRadar' %}
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">{{ row['name'] }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ row['incidents'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2 class="text-lg font-bold my-4">Phishing Incidents</h2>
+    <table class="min-w-full bg-white border border-gray-300">
+      <thead>
+        <tr>
+          <th class="px-6 py-3 border-b border-gray-300 font-semibold text-left">Name</th>
+          <th class="px-6 py-3 border-b border-gray-300 font-semibold text-left">Incidents</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in datas if row['type'] == 'Phishing' %}
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">{{ row['name'] }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ row['incidents'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+{% endblock %}
