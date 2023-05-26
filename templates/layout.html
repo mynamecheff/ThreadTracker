@@ -5,14 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask - SQLite</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #0F0F0F;
+            color: #00FF00;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-100">
-    <nav class="bg-blue-500">
+<body>
+    <nav class="bg-black">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
-                <a href="/loading" class="text-white text-2xl font-semibold">ThreadTracker</a>
+                <a href="/loading" class="text-limegreen text-2xl font-semibold">ThreadTracker</a> 
                 <button class="text-white focus:outline-none md:hidden">
                     <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
                         <path
@@ -20,16 +25,18 @@
                     </svg>
                 </button>
                 <div class="hidden md:flex md:items-center">
-                    <a href="/crud" class="text-white mx-4 hover:text-gray-200">Dashboard</a>
-                    <a href="/achievements" class="text-white mx-4 hover:text-gray-200">Achievements</a>
-                    <a href="/leaderboard" class="text-white mx-4 hover:text-gray-200">Leaderboard</a>
-                    <a href="/leaderboard" action="/logout/" method="post" class="text-white mx-4 hover:text-gray-200">lul</a>
+                    <a href="/crud" class="text-limegreen mx-4 hover:text-green-200">Dashboard</a>
+                    <a href="/achievements" class="text-limegreen mx-4 hover:text-green-200">Achievements</a>
+                    <a href="/leaderboard" class="text-limegreen mx-4 hover:text-green-200">Leaderboard</a>
+                    {% if session.user_id %}
+                        <a href="/logout" class="text-limegreen mx-4 hover:text-green-200">Logout</a>
+                    {% else %}
+                        <a href="/login" class="text-limegreen mx-4 hover:text-green-200">Login</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </nav>
-
-
 
     <div class="container mx-auto px-4 py-8">
         {% with messages=get_flashed_messages(with_categories=true) %}

@@ -123,23 +123,58 @@ def leaderboard():
         data = cur.fetchall()
     return render_template("leaderboard.html", datas=data, ACHIEVEMENT_THRESHOLD=ACHIEVEMENT_THRESHOLD, ACHIEVEMENT_MESSAGE=ACHIEVEMENT_MESSAGE)
 
-@app.route("/achievements")
-@login_required
+
+@app.route('/achievements')
 def achievements():
-    achievements_data = []
+    # Connect to the SQLite database
+    conn = sql.connect('leaderboard.db')
+    cursor = conn.cursor()
 
-    for incident_type, threshold_info in ACHIEVEMENT_THRESHOLD.items():
-        threshold = threshold_info['threshold']
-        with get_db() as conn:
-            cur = conn.cursor()
-            cur.execute("SELECT name, type, COUNT(*) AS incidents FROM stats_data WHERE type = ? GROUP BY name, type HAVING incidents >= ?", (incident_type, threshold))
-            rows = cur.fetchall()
-            for row in rows:
-                data = dict(row)
-                data['achievement_name'] = threshold_info['name']
-                achievements_data.append(data)
+    # Fetch the data from the stats_data table
+    cursor.execute("SELECT * FROM stats_data")
+    data = cursor.fetchall()
 
-    return render_template("achievements.html", datas=achievements_data, ACHIEVEMENT_MESSAGE=ACHIEVEMENT_MESSAGE, ACHIEVEMENT_THRESHOLD=ACHIEVEMENT_THRESHOLD)
+    # Close the database connection
+    conn.close()
+
+    # Process the data and generate achievements
+    achievement_counts = {}
+    achievement_names = {}
+    for row in data:
+        name = row[1]
+        type_value = row[6]
+        if name not in achievement_counts:
+            achievement_counts[name] = {type_value: 1}
+            achievement_names[name] = {type_value: row[1]}
+        else:
+            if type_value not in achievement_counts[name]:
+                achievement_counts[name][type_value] = 1
+                achievement_names[name][type_value] = row[1]
+            else:
+                achievement_counts[name][type_value] += 1
+
+    achievements = []
+    for name, type_values in achievement_counts.items():
+        for type_value, count in type_values.items():
+            if count >= 4:
+                achievement = {
+                    'name': 'Masters',
+                    'type': type_value,
+                    'person': achievement_names[name][type_value]
+                }
+            elif count >= 2:
+                achievement = {
+                    'name': 'Expert',
+                    'type': type_value,
+                    'person': achievement_names[name][type_value]
+                }
+            else:
+                continue
+
+            achievements.append(achievement)
+
+    # Render the HTML template and pass the achievements to it
+    return render_template('achievements.html', achievements=achievements)
 
 def create_users_table():
     with get_db() as conn:
@@ -174,7 +209,7 @@ def login():
 
         if user and user['password'] == password:
             session['user_id'] = user['id']
-            return redirect('/')
+            return redirect('/crud')
 
     return render_template('login.html')
 
