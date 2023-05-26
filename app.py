@@ -3,6 +3,7 @@ from functools import wraps
 import sqlite3 as sql
 from achievements import ACHIEVEMENT_THRESHOLD, ACHIEVEMENT_MESSAGE
 from lul import EpochConverter
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
@@ -56,26 +57,39 @@ def crud():
 
     return render_template("crud.html", datas=formatted_data)
 
+
 @app.route("/add_data", methods=['POST', 'GET'])
 @login_required
 def add_data():
     if request.method == 'POST':
         name = request.form['name']
-        create_date = request.form['create_date']
-        take_ownership_timestamp = request.form['take_ownership_timestamp']
-        closed_incident_timestamp = request.form['closed_incident_timestamp']
+        create_date_str = request.form['create_date']
+        take_ownership_timestamp_str = request.form['take_ownership_timestamp']
+        closed_incident_timestamp_str = request.form['closed_incident_timestamp']
         sd_severity = request.form['sd_severity']
         incident_type = request.form['type']
 
+        # Convert date strings to datetime objects
+        create_date = datetime.strptime(create_date_str, "%Y-%m-%dT%H:%M")
+        take_ownership_timestamp = datetime.strptime(take_ownership_timestamp_str, "%Y-%m-%dT%H:%M")
+        closed_incident_timestamp = datetime.strptime(closed_incident_timestamp_str, "%Y-%m-%dT%H:%M")
+        
+        # Convert datetime objects to Unix timestamp
+        create_date_unix = int(create_date.timestamp() * 1000)
+        take_ownership_unix = int(take_ownership_timestamp.timestamp() * 1000)
+        closed_incident_unix = int(closed_incident_timestamp.timestamp() * 1000)
+        print(str(closed_incident_unix))
+
         with get_db() as conn:
             cur = conn.cursor()
-            cur.execute("INSERT INTO stats_data(name, create_date, take_ownership_timestamp, closed_incident_timestamp, sd_severity, type) VALUES (?, ?, ?, ?, ?, ?)", (name, create_date, take_ownership_timestamp, closed_incident_timestamp, sd_severity, incident_type))
+            cur.execute("INSERT INTO stats_data(name, create_date, take_ownership_timestamp, closed_incident_timestamp, sd_severity, type) VALUES (?, ?, ?, ?, ?, ?)", (name, create_date_unix, take_ownership_unix, closed_incident_unix, sd_severity, incident_type))
             conn.commit()
             flash('Stats added', 'success')
             check_achievements(name, incident_type)
         return redirect(url_for("crud"))
 
     return render_template("add_data.html")
+
 
 @app.route("/edit_data/<string:id>", methods=['POST', 'GET'])
 @login_required
@@ -125,6 +139,7 @@ def leaderboard():
 
 
 @app.route('/achievements')
+@login_required
 def achievements():
     # Connect to the SQLite database
     conn = sql.connect('leaderboard.db')
@@ -154,19 +169,43 @@ def achievements():
                 achievement_counts[name][type_value] += 1
 
     achievements = []
+    gif_mapping = {
+        'Phising1': 'Phising1.gif',
+        'complicated': 'complicated.gif',
+        'QRadar2': 'QRadar2.gif',
+        'Phising2': 'Phising2.gif'
+        # Add more mappings as needed
+    }
+
+    type_specific_gif_mapping = {
+        'Phising': {
+            'Masters': 'Phising1.gif',
+            'Expert': 'Phising2.gif',
+        },
+        'QRadar': {
+            'Masters': 'complicated.gif',
+            'Expert': 'QRadar2.gif',
+        },
+        # Add more type-specific mappings as needed
+    }
+
     for name, type_values in achievement_counts.items():
         for type_value, count in type_values.items():
             if count >= 4:
+                gif = type_specific_gif_mapping.get(type_value, {}).get('Masters', gif_mapping.get(type_value, 'first.gif'))
                 achievement = {
                     'name': 'Masters',
                     'type': type_value,
-                    'person': achievement_names[name][type_value]
+                    'person': achievement_names[name][type_value],
+                    'gif': gif
                 }
             elif count >= 2:
+                gif = type_specific_gif_mapping.get(type_value, {}).get('Expert', gif_mapping.get(type_value, 'first.gif'))
                 achievement = {
                     'name': 'Expert',
                     'type': type_value,
-                    'person': achievement_names[name][type_value]
+                    'person': achievement_names[name][type_value],
+                    'gif': gif
                 }
             else:
                 continue
@@ -175,6 +214,8 @@ def achievements():
 
     # Render the HTML template and pass the achievements to it
     return render_template('achievements.html', achievements=achievements)
+
+
 
 def create_users_table():
     with get_db() as conn:

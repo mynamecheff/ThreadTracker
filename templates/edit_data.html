@@ -3,32 +3,38 @@
 {% block body %}
 <div class="container mx-auto px-4 py-8">
     <div class="flex flex-col items-center">
-        <h3 class="text-2xl font-semibold">Add data</h3>
+        <h3 class="text-2xl font-semibold">Edit data</h3>
         <hr class="my-4">
-        <form method="post" action="{{url_for('add_data')}}" class="w-full max-w-sm">
+        <form method="post" action="{{ url_for('edit_data', id=datas.ID) }}" class="w-full max-w-sm">
             <div class="mb-4">
-                <label for="name" class="block text-gray-700 font-medium">Name</label>
-                <input type="text" name="name" required class="form-input mt-1 w-full" placeholder="Enter name">
+                <label for="name" class="block text-green-500 font-medium">Name</label>
+                <input type="text" name="name" required class="form-input mt-1 w-full bg-gray-900 border border-green-500 text-green-500 placeholder-green-500" placeholder="Enter name" value="{{ datas.name }}">
             </div>
             <div class="mb-4">
-                <label for="create_date" class="block text-gray-700 font-medium">Create Date</label>
-                <input type="text" name="create_date" required class="form-input mt-1 w-full" placeholder="Enter create date">
+                <label for="create_date" class="block text-green-500 font-medium">Create Date</label>
+                <input type="datetime-local" name="create_date" required class="form-input mt-1 w-full bg-gray-900 border border-green-500 text-green-500 placeholder-green-500" placeholder="Enter create date" value="{{ datas.create_date }}">
             </div>
             <div class="mb-4">
-                <label for="take_ownership_timestamp" class="block text-gray-700 font-medium">Taken Ownership</label>
-                <input type="text" name="take_ownership_timestamp" required class="form-input mt-1 w-full" placeholder="Enter taken ownership">
+                <label for="take_ownership_timestamp" class="block text-green-500 font-medium">Taken Ownership</label>
+                <input type="datetime-local" name="take_ownership_timestamp" required class="form-input mt-1 w-full bg-gray-900 border border-green-500 text-green-500 placeholder-green-500" placeholder="Enter taken ownership" value="{{ datas.take_ownership_timestamp }}">
             </div>
             <div class="mb-4">
-                <label for="closed_incident_timestamp" class="block text-gray-700 font-medium">Incident Closed</label>
-                <input type="text" name="closed_incident_timestamp" required class="form-input mt-1 w-full" placeholder="Enter incident closed">
+                <label for="closed_incident_timestamp" class="block text-green-500 font-medium">Incident Closed</label>
+                <input type="datetime-local" name="closed_incident_timestamp" required class="form-input mt-1 w-full bg-gray-900 border border-green-500 text-green-500 placeholder-green-500" placeholder="Enter incident closed" value="{{ datas.closed_incident_timestamp }}">
             </div>
             <div class="mb-4">
-                <label for="sd_severity" class="block text-gray-700 font-medium">Severity</label>
-                <input type="text" name="sd_severity" required class="form-input mt-1 w-full" placeholder="Enter severity">
+                <label for="sd_severity" class="block text-green-500 font-medium">Severity</label>
+                <select name="sd_severity" required class="form-select mt-1 w-full bg-gray-900 border border-green-500 text-green-500 placeholder-green-500">
+                    <option value="" disabled>Select severity</option>
+                    <option value="critical" {% if datas.sd_severity == 'critical' %}selected{% endif %}>Critical</option>
+                    <option value="high" {% if datas.sd_severity == 'high' %}selected{% endif %}>High</option>
+                    <option value="low" {% if datas.sd_severity == 'low' %}selected{% endif %}>Low</option>
+                    <option value="medium" {% if datas.sd_severity == 'medium' %}selected{% endif %}>Medium</option>
+                </select>
             </div>
             <div class="mb-4">
-                <label for="type" class="block text-gray-700 font-medium">Type</label>
-                <input type="text" name="type" required class="form-input mt-1 w-full" placeholder="Enter type">
+                <label for="type" class="block text-green-500 font-medium">Type</label>
+                <input type="text" name="type" required class="form-input mt-1 w-full bg-gray-900 border border-green-500 text-green-500 placeholder-green-500" placeholder="Enter type" value="{{ datas.type }}">
             </div>
             <input type="submit" value="Submit" class="py-2 px-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 cursor-pointer">
         </form>
