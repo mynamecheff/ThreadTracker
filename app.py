@@ -6,7 +6,7 @@ from lul import EpochConverter
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['SECRET_KEY'] = 'secret-key'
 DATABASE = 'leaderboard.db'
 
 def get_db():
