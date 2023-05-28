@@ -69,12 +69,12 @@ def add_data():
         sd_severity = request.form['sd_severity']
         incident_type = request.form['type']
 
-        # Convert date strings to datetime objects
+        # convert input string
         create_date = datetime.strptime(create_date_str, "%Y-%m-%dT%H:%M")
         take_ownership_timestamp = datetime.strptime(take_ownership_timestamp_str, "%Y-%m-%dT%H:%M")
         closed_incident_timestamp = datetime.strptime(closed_incident_timestamp_str, "%Y-%m-%dT%H:%M")
         
-        # Convert datetime objects to Unix timestamp
+        # Convert to Unix timestamp
         create_date_unix = int(create_date.timestamp() * 1000)
         take_ownership_unix = int(take_ownership_timestamp.timestamp() * 1000)
         closed_incident_unix = int(closed_incident_timestamp.timestamp() * 1000)
@@ -141,18 +141,15 @@ def leaderboard():
 @app.route('/achievements')
 @login_required
 def achievements():
-    # Connect to the SQLite database
+    #need to update datbase
     conn = sql.connect('leaderboard.db')
     cursor = conn.cursor()
 
-    # Fetch the data from the stats_data table
     cursor.execute("SELECT * FROM stats_data")
     data = cursor.fetchall()
 
-    # Close the database connection
     conn.close()
 
-    # Process the data and generate achievements
     achievement_counts = {}
     achievement_names = {}
     for row in data:
@@ -174,7 +171,7 @@ def achievements():
         'complicated': 'complicated.gif',
         'QRadar2': 'QRadar2.gif',
         'Phising2': 'Phising2.gif'
-        # Add more mappings as needed
+
     }
 
     type_specific_gif_mapping = {
@@ -186,7 +183,7 @@ def achievements():
             'Masters': 'complicated.gif',
             'Expert': 'QRadar2.gif',
         },
-        # Add more type-specific mappings as needed
+
     }
 
     for name, type_values in achievement_counts.items():
@@ -211,8 +208,7 @@ def achievements():
                 continue
 
             achievements.append(achievement)
-
-    # Render the HTML template and pass the achievements to it
+            
     return render_template('achievements.html', achievements=achievements)
 
 
