@@ -141,18 +141,14 @@ def leaderboard():
 @app.route('/achievements')
 @login_required
 def achievements():
-    # Connect to the SQLite database
-    conn = sql.connect('leaderboard.db')
+    conn = get_db()
     cursor = conn.cursor()
 
-    # Fetch the data from the stats_data table
     cursor.execute("SELECT * FROM stats_data")
     data = cursor.fetchall()
 
-    # Close the database connection
     conn.close()
 
-    # Process the data and generate achievements
     achievement_counts = {}
     achievement_names = {}
     for row in data:
@@ -174,7 +170,6 @@ def achievements():
         'complicated': 'complicated.gif',
         'QRadar2': 'QRadar2.gif',
         'Phising2': 'Phising2.gif'
-        # Add more mappings as needed
     }
 
     type_specific_gif_mapping = {
@@ -186,7 +181,7 @@ def achievements():
             'Masters': 'complicated.gif',
             'Expert': 'QRadar2.gif',
         },
-        # Add more type-specific mappings as needed
+
     }
 
     for name, type_values in achievement_counts.items():
@@ -212,7 +207,6 @@ def achievements():
 
             achievements.append(achievement)
 
-    # Render the HTML template and pass the achievements to it
     return render_template('achievements.html', achievements=achievements)
 
 
