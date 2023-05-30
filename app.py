@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from functools import wraps
 import sqlite3 as sql
 from achievements import ACHIEVEMENT_THRESHOLD, ACHIEVEMENT_MESSAGE
-from lul import EpochConverter, DateTimeConverter
+from lul import EpochConverter
 from datetime import datetime
 
 app = Flask(__name__)
@@ -75,12 +75,12 @@ def add_data():
         sd_severity = request.form['sd_severity']
         incident_type = request.form['type']
 
-        # Convert date strings to datetime objects
+        # convert input string
         create_date = datetime.strptime(create_date_str, "%Y-%m-%dT%H:%M")
         take_ownership_timestamp = datetime.strptime(take_ownership_timestamp_str, "%Y-%m-%dT%H:%M")
         closed_incident_timestamp = datetime.strptime(closed_incident_timestamp_str, "%Y-%m-%dT%H:%M")
         
-        # Convert datetime objects to Unix timestamp
+        # Convert to Unix timestamp
         create_date_unix = int(create_date.timestamp() * 1000)
         take_ownership_unix = int(take_ownership_timestamp.timestamp() * 1000)
         closed_incident_unix = int(closed_incident_timestamp.timestamp() * 1000)
@@ -146,13 +146,10 @@ def leaderboard():
 @app.route('/achievements')
 @login_required
 def achievements():
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM stats_data")
-    data = cursor.fetchall()
-
-    conn.close()
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM stats_data")
+        data = cursor.fetchall()
 
     achievement_counts = {}
     achievement_names = {}
@@ -216,7 +213,6 @@ def achievements():
                 continue
 
             achievements.append(achievement)
-
     return render_template('achievements.html', achievements=achievements)
 
 
