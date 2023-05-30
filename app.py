@@ -2,13 +2,14 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from functools import wraps
 import sqlite3 as sql
 from achievements import ACHIEVEMENT_THRESHOLD, ACHIEVEMENT_MESSAGE
-from lul import EpochConverter
-from datetime import datetime, timedelta
+from lul import EpochConverter, DateTimeConverter
+from datetime import datetime
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['SECRET_KEY'] = 'secret-key'
 DATABASE = 'leaderboard.db'
 
+# Function to connect to database
 def get_db():
     conn = sql.connect(DATABASE)
     conn.row_factory = sql.Row
@@ -23,7 +24,10 @@ def check_achievements(name, incident_type):
             achievement_message = ACHIEVEMENT_MESSAGE[incident_type]
             flash(f'Achievement Unlocked: {achievement_message}', 'info')
 
+
+# Function to check if user is logged in
 def login_required(route_function):
+    # Persve the original metdata of the route_function
     @wraps(route_function)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
@@ -49,9 +53,11 @@ def crud():
         for row in rows:
             formatted_row = {}
             for key, value in dict(row).items():
+                # If exsits
                 if key in ['create_date', 'take_ownership_timestamp', 'closed_incident_timestamp']:
                     formatted_row[key] = EpochConverter.convert(value)
                 else:
+                    # If malformed value
                     formatted_row[key] = value
             formatted_data.append(formatted_row)
 
@@ -78,7 +84,6 @@ def add_data():
         create_date_unix = int(create_date.timestamp() * 1000)
         take_ownership_unix = int(take_ownership_timestamp.timestamp() * 1000)
         closed_incident_unix = int(closed_incident_timestamp.timestamp() * 1000)
-        print(str(closed_incident_unix))
 
         with get_db() as conn:
             cur = conn.cursor()
@@ -151,6 +156,7 @@ def achievements():
 
     achievement_counts = {}
     achievement_names = {}
+    # Get the number of incidents per user
     for row in data:
         name = row[1]
         type_value = row[6]
@@ -165,13 +171,15 @@ def achievements():
                 achievement_counts[name][type_value] += 1
 
     achievements = []
+    # Map gifs to achievements
     gif_mapping = {
         'Phising1': 'Phising1.gif',
         'complicated': 'complicated.gif',
         'QRadar2': 'QRadar2.gif',
-        'Phising2': 'Phising2.gif'
+        'Phising2': 'Phising2.gif',
+        'default': 'first.gif',
     }
-
+    # map gifs to level of achievement
     type_specific_gif_mapping = {
         'Phising': {
             'Masters': 'Phising1.gif',
@@ -181,11 +189,12 @@ def achievements():
             'Masters': 'complicated.gif',
             'Expert': 'QRadar2.gif',
         },
-
     }
 
+    # using the achievement counts dict, determine if a user has achieved a level of achievement
     for name, type_values in achievement_counts.items():
         for type_value, count in type_values.items():
+            # if more then 4 incidents, then Masters
             if count >= 4:
                 gif = type_specific_gif_mapping.get(type_value, {}).get('Masters', gif_mapping.get(type_value, 'first.gif'))
                 achievement = {
@@ -194,6 +203,7 @@ def achievements():
                     'person': achievement_names[name][type_value],
                     'gif': gif
                 }
+            # if more then 2 incidents, then Expert
             elif count >= 2:
                 gif = type_specific_gif_mapping.get(type_value, {}).get('Expert', gif_mapping.get(type_value, 'first.gif'))
                 achievement = {
