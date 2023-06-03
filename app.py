@@ -142,7 +142,7 @@ def leaderboard():
         data = cur.fetchall()
     return render_template("leaderboard.html", datas=data, ACHIEVEMENT_THRESHOLD=ACHIEVEMENT_THRESHOLD, ACHIEVEMENT_MESSAGE=ACHIEVEMENT_MESSAGE)
 
-
+# Note - Need to simplify this for future achievements
 @app.route('/achievements')
 @login_required
 def achievements():
@@ -262,6 +262,58 @@ def loading():
 @app.route('/')
 def frontpage():
     return render_template('frontpage.html')
+
+@app.route("/admin")
+@login_required
+def admin():
+    with get_db() as conn:
+        conn.row_factory = sql.Row
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users")
+        data = cur.fetchall()
+    return render_template("admin.html", datas=data)
+
+@app.route("/add_user",methods=['POST','GET'])
+def add_user():
+    if request.method=='POST':
+        name=request.form['name']
+        password=request.form['password']
+        con=sql.connect(DATABASE)
+        cur=con.cursor()
+        cur.execute("insert into users(name,password) values (?,?)",(name,password))
+        con.commit()
+        flash('User Added','success')
+        return redirect(url_for("admin"))
+    return render_template("add_user.html")
+
+@app.route("/edit_user/<string:id>",methods=['POST','GET'])
+def edit_user(id):
+    if request.method=='POST':
+        name=request.form['name']
+        password=request.form['password']
+        con=sql.connect(DATABASE)
+        cur=con.cursor()
+        cur.execute("update users set name=?,password=? where id=?",(name,password,id))
+        con.commit()
+        flash('User Updated','success')
+        return redirect(url_for("admin"))
+    con=sql.connect(DATABASE)
+    con.row_factory=sql.Row
+    cur=con.cursor()
+    cur.execute("select * from users where id=?",(id,))
+    data=cur.fetchone()
+    return render_template("edit_user.html",datas=data)
+    
+@app.route("/delete_user/<string:id>",methods=['GET'])
+def delete_user(id):
+    con=sql.connect(DATABASE)
+    cur=con.cursor()
+    cur.execute("delete from users where id=?",(id,))
+    con.commit()
+    flash('User Deleted','warning')
+    return redirect(url_for("admin"))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

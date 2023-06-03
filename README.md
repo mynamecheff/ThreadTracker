@@ -30,3 +30,8 @@ To get started with ThreadTrack, follow these steps:
 * Communicate the launch of ThreadTrack to your employees and provide them with instructions on how to participate and start earning points.
 
 * Encourage employees to engage with the platform, earn points, unlock achievements, and redeem rewards.
+
+
+# Using Docker to run the website
+Create image: ```sudo docker build -t flask-app .```  <br />
+Run docker ```sudo docker run -it -p 5000:5000 -d flask-app```   <br />

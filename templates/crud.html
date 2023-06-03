@@ -6,16 +6,16 @@
         <a href="{{ url_for('add_data') }}"
             class="inline-block px-4 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition duration-200">+ Add data</a>
     </p>
-    <table class="min-w-full bg-gray-800 border border-gray-700">
+    <table id="data-table" class="min-w-full bg-gray-800 border border-gray-700">
         <thead>
             <tr>
-                <th class="px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200">ID</th>
-                <th class="px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200">Name</th>
-                <th class="px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200">Created</th>
-                <th class="px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200">Taken Ownership</th>
-                <th class="px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200">End Date</th>
-                <th class="px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200">Severity</th>
-                <th class="px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200">Type</th>
+                <th class="sortable px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200" data-column="id">ID</th>
+                <th class="sortable px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200" data-column="name">Name</th>
+                <th class="sortable px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200" data-column="create_date">Created</th>
+                <th class="sortable px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200" data-column="take_ownership_timestamp">Taken Ownership</th>
+                <th class="sortable px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200" data-column="closed_incident_timestamp">End Date</th>
+                <th class="sortable px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200" data-column="sd_severity">Severity</th>
+                <th class="sortable px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200" data-column="type">Type</th>
                 <th class="px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200"></th>
                 <th class="px-6 py-3 border-b border-gray-700 font-semibold text-left text-gray-200"></th>
             </tr>
@@ -43,4 +43,60 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            // Get all sortable headers
+            const sortableHeaders = document.querySelectorAll('.sortable');
+
+            // Add click event listener to each sortable header
+            sortableHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.getAttribute('data-column');
+                    const isAscending = header.classList.contains('asc');
+
+                    // Remove sorting classes from other headers
+                    sortableHeaders.forEach(h => h.classList.remove('asc', 'desc'));
+
+                    if (isAscending) {
+                        // Sort in descending order
+                        header.classList.add('desc');
+                        // Call a function to sort the table data by the selected column in descending order
+                        sortTableData(column, 'desc');
+                    } else {
+                        // Sort in ascending order
+                        header.classList.add('asc');
+                        // Call a function to sort the table data by the selected column in ascending order
+                        sortTableData(column, 'asc');
+                    }
+                });
+            });
+
+            function sortTableData(column, order) {
+                // Get the table body element
+                const tableBody = document.querySelector('tbody');
+                // Get all table rows
+                const rows = Array.from(tableBody.getElementsByTagName('tr'));
+
+                // Sort the rows based on the specified column and order
+                rows.sort((a, b) => {
+                    const aValue = a.querySelector(`[data-column="${column}"]`).textContent;
+                    const bValue = b.querySelector(`[data-column="${column}"]`).textContent;
+                    if (order === 'asc') {
+                        return aValue.localeCompare(bValue, undefined, { numeric: true, sensitivity: 'base' });
+                    } else {
+                        return bValue.localeCompare(aValue, undefined, { numeric: true, sensitivity: 'base' });
+                    }
+                });
+
+                // Remove existing rows from the table body
+                while (tableBody.firstChild) {
+                    tableBody.firstChild.remove();
+                }
+
+                // Add the sorted rows back to the table body
+                rows.forEach(row => tableBody.appendChild(row));
+            }
+        });
+    </script>
 {% endblock %}
