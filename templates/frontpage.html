@@ -1,41 +1,55 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 
 {% block body %}
-<body class="bg-gray-900">
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-5xl font-bold text-green-400 mb-8">Hacker's Den</h1>
-    
-    <div class="flex justify-center mb-12">
-      <div class="w-64 h-64 bg-gray-800 rounded-lg shadow-lg">
-        <div class="rubiks-cube"></div>
-      </div>
-    </div>
-    
-    <p class="text-lg text-white mb-8">
-      Welcome to the Hacker's Den, where secrets await to be unraveled. Watch as we navigate through the intricate file system, bypassing obstacles, and unlocking hidden knowledge.
-    </p>
-    
-    <a href="/login" class="inline-block px-6 py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-200">
-      Enter the Abyss
-    </a>
-  </div>
+    <section class="bg-black py-16">
+        <div class="container mx-auto text-center">
+            <h1 class="text-5xl font-bold text-limegreen mb-8">Welcome to ThreadTracker</h1>
+            <p class="text-lg text-gray-300 mb-12">Start Tracking Your Threads and Achieve Greatness!</p>
+            <a href="/register" class="bg-limegreen hover:bg-gray-900 text-limegreen py-3 px-8 rounded-full text-xl font-semibold transition-colors duration-300">Get Started</a>
+        </div>
+    </section>
 
-  <style>
-    .rubiks-cube {
-      width: 100%;
-      height: 100%;
-      background-image: url('https://your-rubiks-cube-image-url');
-      animation: rubiks-animation 5s linear infinite;
-    }
+    <section class="py-16">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold text-limegreen mb-8">Features</h2>
+            <div class="flex flex-wrap justify-center">
+                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-gray-900 rounded-lg shadow-xl p-8">
+                        <svg class="h-12 w-12 text-limegreen mx-auto mb-4" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 4L20 7L22 12L20 17L12 20L4 17L2 12L4 7L12 4Z" fill="currentColor" />
+                        </svg>
+                        <h3 class="text-xl font-semibold text-limegreen mb-4">Track Threads</h3>
+                        <p class="text-gray-300"> Effortlessly Track Your Threads and Stay Organized.</p>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-gray-900 rounded-lg shadow-xl p-8">
+                        <svg class="h-12 w-12 text-limegreen mx-auto mb-4" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 4L20 7L22 12L20 17L12 20L4 17L2 12L4 7L12 4Z" fill="currentColor" />
+                        </svg>
+                        <h3 class="text-xl font-semibold text-limegreen mb-4">Achievements</h3>
+                        <p class="text-gray-300">Unlock Achievements Based On Your Thread-Tracking Accomplishments.</p>
+                    </div>
+                </div>
+                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-gray-900 rounded-lg shadow-xl p-8">
+                        <svg class="h-12 w-12 text-limegreen mx-auto mb-4" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 4L20 7L22 12L20 17L12 20L4 17L2 12L4 7L12 4Z" fill="currentColor" />
+                        </svg>
+                        <h3 class="text-xl font-semibold text-limegreen mb-4">Leaderboard</h3>
+                        <p class="text-gray-300">Compete With Others And Climb the Leaderboard.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    @keyframes rubiks-animation {
-      0% {
-        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-      }
-      100% {
-        transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
-      }
-    }
-  </style>
-</body>
+    <section class="bg-limegreen py-16">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold text-limegreen mb-8">Join ThreadTracker Today</h2>
+            <p class="text-lg text-limegreen mb-12">Sign up now and start tracking your threads like never before!</p>
+            <a href="/register" class="bg-limegreen hover:bg-gray-900 text-limegreen py-3 px-8 rounded-full text-xl font-semibold transition-colors duration-300">Get Started</a>
+        </div>
+    </section>
+
 {% endblock %}
