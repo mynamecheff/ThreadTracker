@@ -170,17 +170,17 @@ def achievements():
     achievements = []
     # Map gifs to achievements
     gif_mapping = {
-        'Phising1': 'Phising1.gif',
+        'Phishing1': 'Phishing1.gif',
         'complicated': 'complicated.gif',
         'QRadar2': 'QRadar2.gif',
-        'Phising2': 'Phising2.gif',
+        'Phishing2': 'Phishing2.gif', 
         'default': 'first.gif',
     }
     # map gifs to level of achievement
     type_specific_gif_mapping = {
-        'Phising': {
-            'Masters': 'Phising1.gif',
-            'Expert': 'Phising2.gif',
+        'Phishing': {
+            'Masters': 'Phishing1.gif', 
+            'Expert': 'Phishing2.gif',
         },
         'QRadar': {
             'Masters': 'complicated.gif',
@@ -188,7 +188,7 @@ def achievements():
         },
     }
 
-    # using the achievement counts dict, determine if a user has achieved a level of achievement
+    # using the achievement counts dict, determine if a user has achieved an achievement
     for name, type_values in achievement_counts.items():
         for type_value, count in type_values.items():
             # if more then 4 incidents, then Masters
@@ -274,6 +274,7 @@ def admin():
     return render_template("admin.html", datas=data)
 
 @app.route("/add_user",methods=['POST','GET'])
+@login_required
 def add_user():
     if request.method=='POST':
         name=request.form['name']
@@ -287,6 +288,7 @@ def add_user():
     return render_template("add_user.html")
 
 @app.route("/edit_user/<string:id>",methods=['POST','GET'])
+@login_required
 def edit_user(id):
     if request.method=='POST':
         name=request.form['name']
@@ -305,6 +307,7 @@ def edit_user(id):
     return render_template("edit_user.html",datas=data)
     
 @app.route("/delete_user/<string:id>",methods=['GET'])
+@login_required
 def delete_user(id):
     con=sql.connect(DATABASE)
     cur=con.cursor()
