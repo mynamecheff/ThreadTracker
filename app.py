@@ -3,7 +3,7 @@ from functools import wraps
 import sqlite3 as sql
 from achievements import ACHIEVEMENT_THRESHOLD, ACHIEVEMENT_MESSAGE
 from lul import EpochConverter
-from datetime import datetime
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret-key'
@@ -76,14 +76,9 @@ def add_data():
         incident_type = request.form['type']
 
         # convert input string
-        create_date = datetime.strptime(create_date_str, "%Y-%m-%dT%H:%M")
-        take_ownership_timestamp = datetime.strptime(take_ownership_timestamp_str, "%Y-%m-%dT%H:%M")
-        closed_incident_timestamp = datetime.strptime(closed_incident_timestamp_str, "%Y-%m-%dT%H:%M")
-        
-        # Convert to Unix timestamp
-        create_date_unix = int(create_date.timestamp() * 1000)
-        take_ownership_unix = int(take_ownership_timestamp.timestamp() * 1000)
-        closed_incident_unix = int(closed_incident_timestamp.timestamp() * 1000)
+        create_date_unix = EpochConverter.convert_to_unix(create_date_str)
+        take_ownership_unix = EpochConverter.convert_to_unix(take_ownership_timestamp_str)
+        closed_incident_unix = EpochConverter.convert_to_unix(closed_incident_timestamp_str)
 
         with get_db() as conn:
             cur = conn.cursor()
@@ -101,15 +96,21 @@ def add_data():
 def edit_data(id):
     if request.method == 'POST':
         name = request.form['name']
-        create_date = request.form['create_date']
-        take_ownership_timestamp = request.form['take_ownership_timestamp']
-        closed_incident_timestamp = request.form['closed_incident_timestamp']
+        create_date_str = request.form['create_date']
+        take_ownership_timestamp_str = request.form['take_ownership_timestamp']
+        closed_incident_timestamp_str = request.form['closed_incident_timestamp']
         sd_severity = request.form['sd_severity']
         incident_type = request.form['type']
+        
+        # Convert to Unix timestamp
+        create_date_unix = EpochConverter.convert_to_unix(create_date_str)
+        take_ownership_unix = EpochConverter.convert_to_unix(take_ownership_timestamp_str)
+        closed_incident_unix = EpochConverter.convert_to_unix(closed_incident_timestamp_str)
+
 
         with get_db() as conn:
             cur = conn.cursor()
-            cur.execute("UPDATE stats_data SET name=?, create_date=?, take_ownership_timestamp=?, closed_incident_timestamp=?, sd_severity=?, type=? WHERE id=?", (name, create_date, take_ownership_timestamp, closed_incident_timestamp, sd_severity, incident_type, id))
+            cur.execute("UPDATE stats_data SET name=?, create_date=?, take_ownership_timestamp=?, closed_incident_timestamp=?, sd_severity=?, type=? WHERE id=?", (name, create_date_unix, take_ownership_unix, closed_incident_unix, sd_severity, incident_type, id))
             conn.commit()
             flash('Data updated', 'success')
             check_achievements(name, incident_type)
